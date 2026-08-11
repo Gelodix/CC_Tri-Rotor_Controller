@@ -1,5 +1,5 @@
 local state = require("controller_files.state")
-local basalt = require("controller_files.basalt")
+local basalt = require("basalt")
 local peripherals = require("controller_files.peripherals")
 
 local ui = {}
