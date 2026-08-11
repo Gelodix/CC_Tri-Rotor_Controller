@@ -1,5 +1,6 @@
 local state = require("controller_files.state")
 local peripherals = require("controller_files.peripherals")
+local quaternion = require("library.quaternion")
 
 local controls = {}
 
@@ -27,14 +28,61 @@ local OUT_UPWARD_ROTOR = "left"
 local OUT_DOWNWARD_ROTOR = "right"
 
 function controls.taskStabilizationLogic()
-
     while true do
+
+        if sublevel then
+            if sublevel.isInPlotGrid() then
+                local pose = sublevel.getLogicalPose()
+
+                if pose.position then
+                    state.sable.x = pose.position.x
+                    state.sable.y = pose.position.y
+                    state.sable.z = pose.position.z
+                end
+
+                if pose.orientation and pose.orientation.v then
+                    local q = quaternion.fromComponents(
+                        pose.orientation.v.x,
+                        pose.orientation.v.y,
+                        pose.orientation.v.z,
+                        pose.orientation.a
+                    )
+                    q:normalize()
+
+                    local pitchRad, yawRad, rollRad = q:toEuler()
+
+                    local rawPitchDeg = math.deg(pitchRad)
+                    local rawYawDeg = math.deg(yawRad)
+                    local rawRollDeg = math.deg(rollRad)
+
+                    state.sable.yaw = (rawYawDeg + state.sable.yawOffset + 360) % 360
+
+                    local finalPitch = rawPitchDeg
+                    local finalRoll = rawRollDeg
+
+                    if state.sable.swapPitchAndRoll then
+                        finalPitch = rawRollDeg
+                        finalRoll = rawPitchDeg
+                    end
+
+                    if state.sable.invertPitch then finalPitch = -finalPitch end
+                    if state.sable.invertRoll then finalRoll = -finalRoll end
+
+                    state.sable.pitch = finalPitch
+                    state.sable.roll = finalRoll
+
+
+                end
+            end
+        end
+
         local currentTime = os.clock()
+        local dtP = currentTime - state.pitchState.lastTime
+
+        if dtP <= 0 then dtP = 0.05 end
 
         if state.control.throttle > 0 then
-            local dtP = currentTime - state.pitchState.lastTime
-
-            if dtP <= 0 then dtP = 0.05 end
+            
 
             local currentPitch = state.sable.pitch
 
@@ -60,8 +108,7 @@ function controls.taskStabilizationLogic()
             end
 
 
-            state.pitchState.lastPitch = currentPitch
-            state.pitchState.lastTime = currentTime
+            
 
             if compensatedSignal > 0 then
                 state.control.backRotorDirection = 1
@@ -76,6 +123,9 @@ function controls.taskStabilizationLogic()
         else
             state.control.backRotorStrength = 0
         end
+
+        state.pitchState.lastPitch = state.pitchState.lastPitch
+        state.pitchState.lastTime = currentTime
 
         currentTime = os.clock()
         local dtR = currentTime - state.roll.lastTime
