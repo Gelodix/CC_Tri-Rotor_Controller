@@ -1,5 +1,5 @@
-local state = require("state")
-local peripherals = require("peripherals")
+local state = require("controller_files.state")
+local peripherals = require("controller_files.peripherals")
 
 local controls = {}
 
