@@ -40,7 +40,7 @@ function telemetry.getTelemetry()
                     end
 
                     if state.sable.invertPitch then finalPitch = -finalPitch end
-                    if state.sable.inveryRoll then finalRoll = -finalRoll end
+                    if state.sable.invertRoll then finalRoll = -finalRoll end
 
                     state.sable.pitch = finalPitch
                     state.sable.roll = finalRoll

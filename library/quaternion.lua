@@ -533,3 +533,12 @@ metatable = {
     __tostring = quaternion.tostring,
     __eq = quaternion.equals,
 }
+
+return {
+    new = new,
+    fromAxisAngle = fromAxisAngle,
+    fromEuler = fromEuler,
+    fromComponents = fromComponents,
+    fromMatrix = fromMatrix,
+    identity = identity
+}

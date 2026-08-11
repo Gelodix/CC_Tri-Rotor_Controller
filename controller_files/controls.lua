@@ -168,10 +168,6 @@ function controls.taskLogicAndInputs()
                 yaw = math.max(-15, math.min(15, yaw))
             end
 
-            pitch = 10
-            yaw = 0
-            state.control.throttle = 3
-            state.control.boost = false
         else
             local fwdVal = rs.getAnalogInput(IN_JOY_FWD)
             local bwdVal = rs.getAnalogInput(IN_JOY_BWD)
