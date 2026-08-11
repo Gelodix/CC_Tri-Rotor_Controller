@@ -1,5 +1,5 @@
 local state = require("controller_files.state")
-local quaternion = require("quaternion")
+local quaternion = require("library.quaternion")
 local telemetry = {}
 
 function telemetry.getTelemetry()
