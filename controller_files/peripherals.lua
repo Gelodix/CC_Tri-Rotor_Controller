@@ -3,7 +3,7 @@ local peripherals = {}
 peripherals.trans_left = peripheral.wrap("analog_transmission_4")
 peripherals.trans_right = peripheral.wrap("analog_transmission_5")
 peripherals.relay_base_controls = peripheral.wrap("redstone_relay_3")
-peripherals.relay_back_rotors = peripheral.wrap("redstone_relay_6")
+peripherals.relay_back_rotors = peripheral.wrap("redstone_relay_7")
 peripherals.altitude_sensor = peripheral.find("altitude_sensor")
 peripherals.gimbal_sensor = peripheral.find("gimbal_sensor")
 
