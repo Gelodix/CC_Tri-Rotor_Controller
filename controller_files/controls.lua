@@ -106,6 +106,8 @@ function controls.taskStabilizationLogic()
 
         state.control.leftThrottle = math.max(0, leftPower)
         state.control.rightThrottle = math.max(0, rightPower)
+
+        sleep(0.05)
     end
 end
 
