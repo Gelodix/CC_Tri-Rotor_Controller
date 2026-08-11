@@ -51,8 +51,7 @@ local state = {
         yawOffset = 0,
         swapPitchAndRoll = false,
         invertPitch = false,
-        invertRoll = false,
-        --horizontaleAngle = 0,
+        invertRoll = true,
         
 
     },
