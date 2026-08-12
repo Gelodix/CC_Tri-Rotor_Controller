@@ -173,9 +173,9 @@ basalt.schedule(function()
         end
         sleep(0.1)
 
-        labelCurrentAngle:setText("Current angle : " .. state.sable.yaw)
-        labelAimedAngle:setText("Aimed angle : " .. state.autopilot.aimedAngle)
-        labelDestinationDistance:setText(state.autopilot.destinationDistance)
+        labelCurrentAngle:setText("Current angle : " .. string.format("%.2f", state.sable.yaw))
+        labelAimedAngle:setText("Aimed angle : " .. string.format("%.2f", state.autopilot.aimedAngle))
+        labelDestinationDistance:setText(string.format("%.2f", state.autopilot.destinationDistance))
     end
 end)
 
