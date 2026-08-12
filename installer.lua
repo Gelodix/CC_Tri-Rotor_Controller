@@ -5,7 +5,7 @@ local files = {
     ["controller_files/controls.lua"] = "controller_files/controls.lua",
     ["controller_files/peripherals.lua"] = "controller_files/peripherals.lua",
     ["controller_files/state.lua"] = "controller_files/state.lua",
-    ["controller_files/telemetry.lua"] = "controller_files/telemetry.lua",
+    --["controller_files/telemetry.lua"] = "controller_files/telemetry.lua",
     ["controller_files/ui.lua"] = "controller_files/ui.lua",
     ["library/quaternion.lua"] = "library/quaternion.lua",
 }
