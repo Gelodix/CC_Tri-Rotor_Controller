@@ -186,7 +186,13 @@ function controls.taskAutopilot()
             state.autopilot.destinationDistance = math.sqrt(dx^2 + dz^2)
 
             local angleRad  = math.atan2(dz, dx)
-            state.autopilot.aimedAngle = (math.deg(angleRad) + 360) % 360
+            local rawAngleDeg = math.deg(angleRad)
+
+            local correctedAngle = (90 - rawAngleDeg) % 360
+
+            if correctedAngle < 0 then correctedAngle = correctedAngle + 90 end
+
+            state.autopilot.aimedAngle = correctedAngle
         end
         sleep(0.05)
     end
