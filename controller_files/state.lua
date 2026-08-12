@@ -58,10 +58,16 @@ local state = {
     autopilot = {
         destinationX = 0,
         destinationZ = 0,
+        slowingDistance = 500,
+        brakingDistance = 200,
+        lastDistance = 0,
+        isBraking = false,
         destinationRadius = 100, -- in blocks 
         hasSetDestination = false,
         destinationDistance = 0,
         aimedAngle = 0,
+        maxPitch = 15,
+        maxBrakingPitch = -10,
 
         kpYaw = 0.08,
         kdYaw = 0.1,

@@ -210,27 +210,40 @@ function controls.taskLogicAndInputs()
 
         if state.ui.autopilotEnabled then
             local distance = state.autopilot.destinationDistance
+            local distanceDelta = distance - (state.autopilot.lastDistance or distance)
+            state.autopilot.lastDistance = distance
 
             if distance <= state.autopilot.destinationRadius then
                 pitch = 0
                 yaw = 0
                 state.control.boost = false
                 ui.setAutopilot(false)
+                state.autopilot.isBraking = false
             else
-                local brakingDistance = 500
-                local maxPitch = 15
 
-                if distance > brakingDistance then
-                    pitch = maxPitch
+                if distance > state.autopilot.slowingDistance then
+                    pitch = state.autopilot.maxPitch
                     state.control.throttle = 0
                     state.control.boost = true
+                    state.autopilot.isBraking = false
                 else
                     state.control.boost = false
-                    local remainingDistance = distance - state.autopilot.destinationRadius
-                    local brackingMargin = brakingDistance - state.autopilot.destinationRadius
-                    local approachRatio = math.max(0, remainingDistance/brackingMargin)
 
-                    pitch = maxPitch * approachRatio
+                    if distance <= state.autopilot.brakingDistance and distanceDelta < -0.01 then
+                        state.autopilot.isBraking = true
+                    elseif distanceDelta >= 0 then
+                        state.autopilot.isBraking = false
+                    end
+
+                    if state.autopilot.isBraking then
+                        pitch = state.autopilot.maxBrakingPitch
+                    else
+                        local remainingDistance = distance - state.autopilot.destinationRadius
+                        local brackingMargin = state.autopilot.slowingDistance - state.autopilot.destinationRadius
+                        local approachRatio = math.max(0, remainingDistance/brackingMargin)
+
+                        pitch = state.autopilot.maxPitch * approachRatio
+                    end
                 end
 
                 local currentAngle = state.sable.yaw
