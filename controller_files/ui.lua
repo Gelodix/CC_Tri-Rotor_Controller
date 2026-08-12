@@ -64,16 +64,33 @@ local function destinationInputsFilled()
     return (tonumber(xValue) ~= nil and tonumber(zValue) ~= nil)
 end
 
-ui.buttonSetDestination = main:addButton():setPosition(2, 5):setSize(17, 3):setText("Set Coordinates"):onClick(
-    function()
-        if destinationInputsFilled() then
+inputDestinationX:onKey(function(self, event, key)
+    if key == keys.tab then
+        inputDestinationZ:setFocus()
+    end
+end)
+
+inputDestinationZ:onKey(function(self, event, key)
+    if key == keys.tab then
+        inputDestinationX:setFocus()
+    end
+end)
+
+
+
+local function setDestination()
+    if destinationInputsFilled() then
             state.autopilot.destinationX = tonumber(inputDestinationX:getText())
             state.autopilot.destinationZ = tonumber(inputDestinationZ:getText())
             inputDestinationX:setText("")
             inputDestinationZ:setText("")
             state.autopilot.hasSetDestination = true
-        end
-    end)
+    end
+end
+
+ui.buttonSetDestination = main:addButton():setPosition(2, 5):setSize(17, 3):setText("Set Coordinates"):onClick(setDestination)
+inputDestinationX:onEnter(setDestination)
+inputDestinationZ:onEnter(setDestination)
 
 
 ui.buttonToggleAutoPilot = main:addButton():setPosition(2, 14):setSize(24, 3)
