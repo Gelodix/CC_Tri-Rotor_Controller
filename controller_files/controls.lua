@@ -76,10 +76,7 @@ function controls.taskStabilizationLogic()
             end
         end
 
-        local currentTime = os.clock()
-        local dtP = currentTime - state.pitchState.lastTime
 
-        if dtP <= 0 then dtP = 0.05 end
 
         local gimbalAngles = peripherals.gimbal_sensor.getAngles()
         local gimbalPitch = gimbalAngles[1]
@@ -93,7 +90,12 @@ function controls.taskStabilizationLogic()
         print("P: " .. state.sable.pitch)
         print("R: " .. state.sable.roll)
 
-        if state.control.throttle > 0 then
+        local currentTime = os.clock()
+        local dtP = currentTime - state.pitchState.lastTime
+
+        if dtP <= 0 then dtP = 0.05 end
+
+        --if state.control.throttle > 0 then
             
 
             local currentPitch = state.sable.pitch
@@ -104,6 +106,9 @@ function controls.taskStabilizationLogic()
             end
 
             local pitchRate = (currentPitch - state.pitchState.lastPitch) / dtP
+
+            state.pitchState.lastPitch = currentPitch
+            state.pitchState.lastTime = currentTime
 
             local predictedPitch = currentPitch + (pitchRate * state.pitchState.kd) 
 
@@ -132,12 +137,12 @@ function controls.taskStabilizationLogic()
             local finalSignal = math.floor(absSignal)
 
             state.control.backRotorStrength = math.max(0, math.min(15, finalSignal))
-        else
-            state.control.backRotorStrength = 0
-        end
+        --else
+        --    state.control.backRotorStrength = 0
+        --end
 
-        state.pitchState.lastPitch = state.pitchState.lastPitch
-        state.pitchState.lastTime = currentTime
+        
+        
 
         currentTime = os.clock()
         local dtR = currentTime - state.roll.lastTime
