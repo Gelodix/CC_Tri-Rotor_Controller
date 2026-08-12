@@ -30,9 +30,59 @@ function ui.setaltitudeController (on --[[boolean]])
     end
 end
 
+local function cleanCoordinateInput(self)
+    local value = self:getText()
+    if value and type(value) == "string" then
+        local cleanValue = value:gsub("[^%d%-]", "")
+        local isNegative = (string.sub(cleanValue, 1, 1) == "-")
 
-local inputDestinationX = main:addInput():setPosition(2, 3):setSize(6, 1)
-local inputDestinationZ = main:addInput():setPosition(9, 3):setSize(6, 1)
+        cleanValue = cleanValue:gsub("-","")
+
+        cleanValue = string.sub(cleanValue, 1, 5)
+
+        if isNegative then
+            cleanValue = "-" .. cleanValue
+        end
+
+        if value ~= cleanValue then
+            self:setText(cleanValue)
+        end
+    end
+end
+
+
+local inputDestinationX = main:addInput():setPosition(2, 3):setSize(8, 1)
+local inputDestinationZ = main:addInput():setPosition(11, 3):setSize(8, 1)
+
+inputDestinationX:onChange(cleanCoordinateInput)
+inputDestinationZ:onChange(cleanCoordinateInput)
+
+local function destinationInputsFilled()
+    local xValue = inputDestinationX:getText()
+    local zValue = inputDestinationZ:getText()
+    
+    return (tonumber(xValue) ~= nil and tonumber(zValue) ~= nil)
+end
+
+ui.buttonSetDestination = main:addButton():setPosition(2, 5):setSize(17, 3):setText("Set Coordinates"):onClick(
+    function()
+        if destinationInputsFilled() then
+            state.autopilot.destinationX = tonumber(inputDestinationX:getText())
+            state.autopilot.destinationZ = tonumber(inputDestinationZ:getText())
+            inputDestinationX:setText("")
+            inputDestinationZ:setText("")
+            state.autopilot.hasSetDestination = true
+        end
+    end)
+
+
+ui.buttonToggleAutoPilot = main:addButton():setPosition(2, 14):setSize(24, 3)
+    :onClick(
+    function()
+        ui.setAutopilot(not state.ui.autopilotEnabled)
+    end)
+
+ui.setAutopilot(state.ui.autopilotEnabled)
 
 -- labels to show important informations
 local labelCurrentAltitude = main:addLabel():setPosition(27, 2):setText("Current altitude : --")
@@ -81,13 +131,7 @@ ui.buttonToggleAltitudeControl = main:addButton():setPosition(27, 9):setSize(24,
 ui.setaltitudeController(state.ui.altitudeControllerEnabled)
 
 -- toggle button to enable/disable autopilot
-ui.buttonToggleAutoPilot = main:addButton():setPosition(27, 14):setSize(24, 3)
-    :onClick(
-    function()
-        ui.setAutopilot(not state.ui.autopilotEnabled)
-    end)
 
-ui.setAutopilot(state.ui.autopilotEnabled)
 
 -- side task to update the labels
 basalt.schedule(function()
@@ -96,6 +140,12 @@ basalt.schedule(function()
             labelCurrentAltitude:setText("Current altitude : " .. math.floor(peripherals.altitude_sensor.getHeight() - state.altitude.blockDifferentialBetweenSensorAndShipBottom))
             labelVerticalVelocity:setText("Vertical speed : " .. math.floor(peripherals.altitude_sensor.getVerticalSpeed()) .. "m/s")
         end 
+
+        if destinationInputsFilled() then
+            ui.buttonSetDestination:setBackground(colors.blue)
+        else
+            ui.buttonSetDestination:setBackground(colors.gray)
+        end
         sleep(0.1)
     end
 end)

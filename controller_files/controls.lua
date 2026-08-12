@@ -78,17 +78,17 @@ function controls.taskStabilizationLogic()
 
 
 
-        local gimbalAngles = peripherals.gimbal_sensor.getAngles()
-        local gimbalPitch = gimbalAngles[1]
-        local gimbalRoll = gimbalAngles[2]
+        --local gimbalAngles = peripherals.gimbal_sensor.getAngles()
+        --local gimbalPitch = gimbalAngles[1]
+        --local gimbalRoll = gimbalAngles[2]
 
-        term.setCursorPos(1,1)
-        print("Gimbal:")
-        print("P: " .. gimbalPitch)
-        print("R: " .. gimbalRoll)
-        print("Sable:")
-        print("P: " .. state.sable.pitch)
-        print("R: " .. state.sable.roll)
+       -- term.setCursorPos(1,1)
+        --print("Gimbal:")
+        --print("P: " .. gimbalPitch)
+        --print("R: " .. gimbalRoll)
+        --print("Sable:")
+        --print("P: " .. state.sable.pitch)
+        --print("R: " .. state.sable.roll)
 
         local currentTime = os.clock()
         local dtP = currentTime - state.pitchState.lastTime
@@ -98,45 +98,45 @@ function controls.taskStabilizationLogic()
         --if state.control.throttle > 0 then
             
 
-            local currentPitch = state.sable.pitch
+        local currentPitch = state.sable.pitch
 
-            local airPressure = peripherals.altitude_sensor.getAirPressure()
-            if airPressure < state.pitchState.minPressure then
-                airPressure = state.pitchState.minPressure
-            end
+        local airPressure = peripherals.altitude_sensor.getAirPressure()
+        if airPressure < state.pitchState.minPressure then
+            airPressure = state.pitchState.minPressure
+        end
 
-            local pitchRate = (currentPitch - state.pitchState.lastPitch) / dtP
+        local pitchRate = (currentPitch - state.pitchState.lastPitch) / dtP
 
-            state.pitchState.lastPitch = currentPitch
-            state.pitchState.lastTime = currentTime
+        state.pitchState.lastPitch = currentPitch
+        state.pitchState.lastTime = currentTime
 
-            local predictedPitch = currentPitch + (pitchRate * state.pitchState.kd) 
+        local predictedPitch = currentPitch + (pitchRate * state.pitchState.kd) 
 
-            local pitchError = state.pitchState.targetPitch - predictedPitch
+        local pitchError = state.pitchState.targetPitch - predictedPitch
 
-            local compensatedSignal = 0
+        local compensatedSignal = 0
 
-            if pitchError > state.pitchState.deadband then
-                local baseControlSignal = (pitchError - state.pitchState.deadband) * state.pitchState.kp
-                compensatedSignal = (baseControlSignal * state.pitchState.backRotorRation) / airPressure
-            elseif pitchError < -state.pitchState.deadband then
-                local baseControlSignal = (pitchError + state.pitchState.deadband) *state.pitchState.kp
-                compensatedSignal = (baseControlSignal * state.pitchState.backRotorRation) / airPressure
-            end
+        if pitchError > state.pitchState.deadband then
+            local baseControlSignal = (pitchError - state.pitchState.deadband) * state.pitchState.kp
+            compensatedSignal = (baseControlSignal * state.pitchState.backRotorRation) / airPressure
+        elseif pitchError < -state.pitchState.deadband then
+            local baseControlSignal = (pitchError + state.pitchState.deadband) *state.pitchState.kp
+            compensatedSignal = (baseControlSignal * state.pitchState.backRotorRation) / airPressure
+        end
 
 
-            
+        
 
-            if compensatedSignal > 0 then
-                state.control.backRotorDirection = 1
-            else 
-                state.control.backRotorDirection = 0
-            end
+        if compensatedSignal > 0 then
+            state.control.backRotorDirection = 1
+        else 
+            state.control.backRotorDirection = 0
+        end
 
-            local absSignal = math.abs(compensatedSignal)
-            local finalSignal = math.floor(absSignal)
+        local absSignal = math.abs(compensatedSignal)
+        local finalSignal = math.floor(absSignal)
 
-            state.control.backRotorStrength = math.max(0, math.min(15, finalSignal))
+        state.control.backRotorStrength = math.max(0, math.min(15, finalSignal))
         --else
         --    state.control.backRotorStrength = 0
         --end
