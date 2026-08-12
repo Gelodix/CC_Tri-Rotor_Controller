@@ -81,6 +81,18 @@ function controls.taskStabilizationLogic()
 
         if dtP <= 0 then dtP = 0.05 end
 
+        local gimbalAngles = peripherals.gimbal_sensor.getAngles()
+        local gimbalPitch = gimbalAngles[1]
+        local gimbalRoll = gimbalAngles[2]
+
+        term.setCursorPos(1,1)
+        print("Gimbal:")
+        print("P: " .. gimbalPitch)
+        print("R: " .. gimbalRoll)
+        print("Sable:")
+        print("P: " .. state.sable.pitch)
+        print("R: " .. state.sable.roll)
+
         if state.control.throttle > 0 then
             
 
