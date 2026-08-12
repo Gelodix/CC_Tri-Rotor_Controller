@@ -230,8 +230,7 @@ function controls.taskLogicAndInputs()
                 local targetAngle = state.autopilot.aimedAngle
                 local angleError = (targetAngle - currentAngle + 180) % 360 - 180
 
-                local kpYaw = 0.15
-                yaw = angleError * kpYaw
+                yaw = angleError * state.autopilot.kpYaw
                 yaw = math.max(-15, math.min(15, yaw))
             end
 

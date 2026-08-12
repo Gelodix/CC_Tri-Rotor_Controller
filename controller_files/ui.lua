@@ -50,9 +50,16 @@ local function cleanCoordinateInput(self)
     end
 end
 
+main:addLabel():setPosition(2, 2):setText("Destination Coordinates : ")
+main:addLabel():setPosition(2, 3):setText("X:")
+main:addLabel():setPosition(13, 3):setText("Z:")
+local labelCurrentAngle = main:addLabel():setPosition(2, 9):setText("Current angle : --")
+local labelAimedAngle = main:addLabel():setPosition(2, 10):setText("Aimed angle : --")
+local labelDestinationDistance = main:addLabel():setPosition(2, 11):setText("Destination Distance : --")
 
-local inputDestinationX = main:addInput():setPosition(2, 3):setSize(8, 1)
-local inputDestinationZ = main:addInput():setPosition(11, 3):setSize(8, 1)
+
+local inputDestinationX = main:addInput():setPosition(4, 3):setSize(8, 1)
+local inputDestinationZ = main:addInput():setPosition(15, 3):setSize(8, 1)
 
 inputDestinationX:onChange(cleanCoordinateInput)
 inputDestinationZ:onChange(cleanCoordinateInput)
@@ -88,7 +95,7 @@ local function setDestination()
     end
 end
 
-ui.buttonSetDestination = main:addButton():setPosition(2, 5):setSize(17, 3):setText("Set Coordinates"):onClick(setDestination)
+ui.buttonSetDestination = main:addButton():setPosition(2, 5):setSize(21, 3):setText("Set Coordinates"):onClick(setDestination)
 inputDestinationX:onEnter(setDestination)
 inputDestinationZ:onEnter(setDestination)
 
@@ -164,6 +171,10 @@ basalt.schedule(function()
             ui.buttonSetDestination:setBackground(colors.gray)
         end
         sleep(0.1)
+
+        labelCurrentAngle:setText("Current angle : " .. state.sable.yaw)
+        labelAimedAngle:setText("Aimed angle : " .. state.autopilot.aimedAngle)
+        labelDestinationDistance:setText("Destination Distance : --")
     end
 end)
 
