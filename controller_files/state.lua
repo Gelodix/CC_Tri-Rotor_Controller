@@ -62,7 +62,7 @@ local state = {
         hasSetDestination = false,
         destinationDistance = 0,
         aimedAngle = 0,
-        kpYaw = 0.1,
+        kpYaw = 0.08,
     },
 }
 

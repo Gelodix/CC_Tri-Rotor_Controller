@@ -55,7 +55,8 @@ main:addLabel():setPosition(2, 3):setText("X:")
 main:addLabel():setPosition(13, 3):setText("Z:")
 local labelCurrentAngle = main:addLabel():setPosition(2, 9):setText("Current angle : --")
 local labelAimedAngle = main:addLabel():setPosition(2, 10):setText("Aimed angle : --")
-local labelDestinationDistance = main:addLabel():setPosition(2, 11):setText("Destination Distance : --")
+main:addLabel():setPosition(2, 11):setText("Destination Distance :")
+local labelDestinationDistance = main:addLabel():setPosition(2, 12):setText("--")
 
 
 local inputDestinationX = main:addInput():setPosition(4, 3):setSize(8, 1)
@@ -174,7 +175,7 @@ basalt.schedule(function()
 
         labelCurrentAngle:setText("Current angle : " .. state.sable.yaw)
         labelAimedAngle:setText("Aimed angle : " .. state.autopilot.aimedAngle)
-        labelDestinationDistance:setText("Destination Distance : --")
+        labelDestinationDistance:setText(state.autopilot.destinationDistance)
     end
 end)
 
