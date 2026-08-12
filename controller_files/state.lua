@@ -58,11 +58,15 @@ local state = {
     autopilot = {
         destinationX = 0,
         destinationZ = 0,
-        destinationRadius = 50, -- in blocks 
+        destinationRadius = 100, -- in blocks 
         hasSetDestination = false,
         destinationDistance = 0,
         aimedAngle = 0,
+
         kpYaw = 0.08,
+        kdYaw = 0.1,
+        lastAngleError = 0,
+        lastTime = os.clock(),
     },
 }
 

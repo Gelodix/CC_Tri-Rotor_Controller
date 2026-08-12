@@ -50,7 +50,7 @@ local function cleanCoordinateInput(self)
     end
 end
 
-main:addLabel():setPosition(2, 2):setText("Destination Coordinates : ")
+main:addLabel():setPosition(2, 2):setText("Destination Coordinates")
 main:addLabel():setPosition(2, 3):setText("X:")
 main:addLabel():setPosition(15, 3):setText("Z:")
 local labelCurrentAngle = main:addLabel():setPosition(2, 9):setText("Current angle : --")

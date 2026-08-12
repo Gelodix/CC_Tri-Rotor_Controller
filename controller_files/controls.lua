@@ -1,6 +1,7 @@
 local state = require("controller_files.state")
 local peripherals = require("controller_files.peripherals")
 local quaternion = require("library.quaternion")
+local ui =  require("controller_files.ui")
 
 local controls = {}
 
@@ -214,10 +215,10 @@ function controls.taskLogicAndInputs()
                 pitch = 0
                 yaw = 0
                 state.control.boost = false
-                state.ui.autopilotEnabled = false
+                ui.setAutopilot(false)
             else
                 local brakingDistance = 500
-                local maxPitch = 10
+                local maxPitch = 15
 
                 if distance > brakingDistance then
                     pitch = maxPitch
@@ -236,7 +237,16 @@ function controls.taskLogicAndInputs()
                 local targetAngle = state.autopilot.aimedAngle
                 local angleError = (targetAngle - currentAngle + 180) % 360 - 180
 
-                yaw = angleError * state.autopilot.kpYaw
+                local currentTime = os.clock()
+                local dt = currentTime - state.autopilot.lastTime
+                if dt <= 0 then dt = 0.05 end
+
+                local errorRate = (angleError - state.autopilot.lastAngleError) / dt
+
+                state.autopilot.lastAngleError = angleError
+                state.autopilot.lastTime = currentTime
+
+                yaw = (angleError * state.autopilot.kpYaw) + (errorRate * state.autopilot.kdYaw)
                 yaw = math.max(-15, math.min(15, yaw))
             end
 
